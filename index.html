@@ -237,12 +237,12 @@ const BODIES = [
     "When a comet comes close to the Sun, its ice warms up and makes a long, glowing tail.",
     "A comet's tail always points away from the Sun, even when the comet is flying away!"]}
 ];
-// ===== The explorer's name: change it here and it updates everywhere =====
+// ===== The player's name: change it here and it updates everywhere =====
 const PLAYER_NAME = "Lenny Bean";
 const NAME_ON_SCREEN = PLAYER_NAME.replace(/ /g, "\u00a0"); // keeps the name on one line
 const NAMED_INTROS = ["Guess what, NAME?","Hey NAME, did you know?","Whoa, NAME!","NAME, listen to this!","Ooh, NAME, here's a cool one!","Look, NAME!"];
-let lastIntroNamed = true; // start true so the very first fact uses a plain intro
-const INTROS = ["Whoa!","Guess what?","Did you know?","Wow-wee!","Ooh, listen!","Here's a cool one!","Hey, explorer!","Zoom zoom!"];
+let lastIntroNamed = false; // first fact uses her name
+const INTROS = ["Whoa!","Guess what?","Did you know?","Wow-wee!","Ooh, listen!","Here's a cool one!","Blast off!","Zoom zoom!"];
 const factIdx = {}; // which fact each place shows next
 // [x, y] as fractions of the play area, for wide (landscape) and tall (portrait) screens
 const LAYOUT_WIDE = {
@@ -604,7 +604,7 @@ function showFact(b, i, withName){
   f.classList.remove("newfact"); void f.offsetWidth; f.classList.add("newfact");
   document.getElementById("dots").innerHTML = b.facts.map((_, k) => `<span class="${k===i?"on":""}"></span>`).join("");
   // use her name about 1 in 3 times, never twice in a row
-  const useName = !lastIntroNamed && Math.random() < 0.35;
+  const useName = Math.random() < (lastIntroNamed ? 0.45 : 0.85);
   lastIntroNamed = useName;
   const pool = useName ? NAMED_INTROS : INTROS;
   const intro = pool[Math.floor(Math.random()*pool.length)].replace("NAME", PLAYER_NAME);
