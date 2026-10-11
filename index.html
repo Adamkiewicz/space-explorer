@@ -130,6 +130,69 @@
 
   #party h1{font-size:clamp(34px,7vmin,60px);color:#ff5e7e;margin:6px 0;text-shadow:2px 2px 0 #2b1d4f;}
   #confetti{position:fixed;inset:0;pointer-events:none;z-index:11;width:100%;height:100%;}
+
+  /* ---------- Star pictures (constellations) ---------- */
+  #skyBtn{position:fixed;right:10px;top:10px;z-index:7;width:clamp(64px,9vmin,84px);height:clamp(64px,9vmin,84px);border-radius:50%;
+    border:3px solid #ffd84d;background:radial-gradient(circle at 40% 35%,#3b2a8f,#160c44);padding:7px;cursor:pointer;
+    box-shadow:0 4px 0 rgba(0,0,0,.3),0 0 16px rgba(255,216,77,.45);animation:skyglow 2.4s ease-in-out infinite;}
+  #skyBtn:active{transform:translateY(3px);}
+  #skyBtn svg{width:100%;height:100%;display:block;pointer-events:none;}
+  #skyBtn .lab{position:absolute;top:100%;right:-6px;margin-top:5px;white-space:nowrap;font-size:clamp(13px,1.9vmin,18px);font-weight:bold;
+    color:#ffe9a8;background:rgba(20,10,60,.7);padding:1px 9px;border-radius:999px;pointer-events:none;text-shadow:0 1px 0 #000;}
+  @keyframes skyglow{0%,100%{box-shadow:0 4px 0 rgba(0,0,0,.3),0 0 10px rgba(255,216,77,.35)}50%{box-shadow:0 4px 0 rgba(0,0,0,.3),0 0 24px rgba(255,216,77,.8)}}
+  #constOv{background:radial-gradient(ellipse at 50% 25%,#2a1866 0%,#120a3a 55%,#08041e 100%);flex-direction:column;justify-content:flex-start;
+    padding:10px 12px 12px;}
+  #csPick,#csPlay{display:none;flex-direction:column;align-items:center;width:100%;height:100%;min-height:0;}
+  #constOv.pick #csPick,#constOv.play #csPlay{display:flex;}
+  #csPick{overflow:auto;-webkit-overflow-scrolling:touch;touch-action:pan-y;}
+  .cs-head{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;flex:0 0 auto;}
+  .cs-title{font-size:clamp(28px,5.6vmin,54px);font-weight:bold;color:#ffd84d;text-shadow:0 4px 0 #b5179e,0 8px 16px rgba(0,0,0,.5);text-align:center;flex:1;line-height:1.1;}
+  .cs-sub{font-size:clamp(17px,2.8vmin,26px);font-weight:bold;text-align:center;margin:4px 8px 8px;max-width:900px;text-shadow:0 2px 0 rgba(0,0,0,.4);}
+  .cs-modes{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:2px 0 12px;}
+  .cs-mode{border:3px solid rgba(255,255,255,.35);background:rgba(255,255,255,.1);color:#fff;border-radius:999px;font-size:clamp(18px,3vmin,26px);
+    font-weight:bold;padding:10px 22px;min-height:60px;cursor:pointer;}
+  .cs-mode.on{background:#ffd84d;border-color:#fff;color:#2b1d4f;box-shadow:0 0 18px rgba(255,216,77,.6);}
+  .cs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(clamp(150px,21vmin,210px),1fr));gap:clamp(10px,1.8vmin,18px);width:min(100%,1000px);padding:6px 6px 14px;}
+  .cs-tile{position:relative;border:3px solid rgba(255,255,255,.25);background:rgba(255,255,255,.07);border-radius:24px;padding:6px 6px 10px;color:#fff;
+    cursor:pointer;display:flex;flex-direction:column;align-items:center;font-weight:bold;font-size:clamp(17px,2.6vmin,24px);min-height:120px;}
+  .cs-tile:active{transform:scale(.96);}
+  .cs-tile svg{width:100%;height:clamp(90px,17vmin,170px);display:block;pointer-events:none;}
+  .cs-tile.done{border-color:#ffd84d;background:rgba(255,216,77,.13);}
+  .cs-tile .got{position:absolute;right:-10px;top:-10px;width:44px;height:44px;opacity:0;transform:scale(0);transition:all .4s cubic-bezier(.3,1.8,.5,1);pointer-events:none;}
+  .cs-tile.done .got{opacity:1;transform:scale(1);}
+  .cs-tile span{pointer-events:none;}
+  .cs-back{flex:0 0 auto;}
+  #csCount{font-size:clamp(17px,2.6vmin,24px);font-weight:bold;display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.12);
+    border:2px solid rgba(255,255,255,.25);border-radius:999px;padding:4px 14px;}
+  #csCount svg{width:30px;height:30px;}
+  #csAll{display:none;font-size:clamp(22px,4vmin,36px);font-weight:bold;color:#2b1d4f;background:#ffd84d;border-radius:24px;padding:8px 20px;margin:0 8px 10px;text-align:center;
+    animation:factin .45s cubic-bezier(.3,1.5,.5,1);}
+  #csPick.alldone #csAll{display:block;}
+  #csSky{flex:1 1 auto;width:100%;min-height:0;display:block;touch-action:none;cursor:pointer;}
+  #csThumb{width:clamp(64px,10vmin,96px);height:clamp(64px,10vmin,96px);border:2px dashed rgba(255,255,255,.35);border-radius:16px;flex:0 0 auto;}
+  #csThumb svg{width:100%;height:100%;display:block;}
+  .cs-star .core{fill:#fffbe6;transition:fill .3s;}
+  .cs-star .ring{opacity:0;stroke:#ffd84d;transition:opacity .2s;}
+  .cs-star.lit .core{fill:#ffd60a;}
+  .cs-star.lit .num{display:none;}
+  .cs-star.next .ring,.cs-star.hint .ring{opacity:1;animation:csPulse 1s ease-in-out infinite;}
+  .cs-star.pen .ring{opacity:1;stroke:#7ee8fa;}
+  .cs-star.oops .core{animation:csOops .5s ease-in-out;}
+  @keyframes csPulse{0%,100%{stroke-width:.6;stroke-opacity:1}50%{stroke-width:2.2;stroke-opacity:.45}}
+  @keyframes csOops{0%,100%{fill:#fffbe6}40%{fill:#ff7aa2}}
+  .cs-tag{opacity:0;transition:opacity .8s .4s;}
+  .cs-line{stroke:#ffd84d;stroke-width:1.3;stroke-linecap:round;fill:none;animation:csDraw .35s ease-out forwards;}
+  @keyframes csDraw{to{stroke-dashoffset:0}}
+  .cs-pic{opacity:0;transition:opacity 1.2s ease-in;}
+  #csSky.done .cs-pic{opacity:.33;}
+  #csSky.done .cs-tag{opacity:1;}
+  #csSky.done .cs-line{stroke:#fff3b0;stroke-width:1.7;filter:drop-shadow(0 0 1.5px #ffd84d);}
+  #csReveal{display:none;flex:0 0 auto;width:min(96vw,760px);margin-top:6px;padding:12px 18px 14px;max-height:none;transform:none;}
+  #csPlay.revealed #csReveal{display:block;animation:factin .45s cubic-bezier(.3,1.5,.5,1);}
+  #csReveal h1{margin:0 0 4px;}
+  #csReveal p.fact{margin:2px 0 10px;}
+  #csReveal .earned{margin-bottom:6px;}
+  @media (max-width:480px), (max-height:700px){ #csReveal{padding:8px 10px 10px;} .cs-mode{min-height:52px;padding:6px 14px;} }
 </style>
 </head>
 <body>
@@ -170,6 +233,43 @@
   <h1>Space Explorer!</h1>
   <p>Fly your rocket to the Sun, the Moon, and the planets!</p>
   <button class="bigbtn" id="startBtn">Tap to Start</button>
+</div>
+<button id="skyBtn" aria-label="Star pictures"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M10 69 L26 54 L40 53 L57 51 L84 31 L90 47 L68 60 L57 51" stroke="#ffd84d" stroke-width="4" fill="none" stroke-linejoin="round" stroke-linecap="round" opacity=".8"/><g fill="#fff"><circle cx="10" cy="69" r="6"/><circle cx="26" cy="54" r="5.5"/><circle cx="40" cy="53" r="6"/><circle cx="57" cy="51" r="5"/><circle cx="84" cy="31" r="6.5"/><circle cx="90" cy="47" r="5.5"/><circle cx="68" cy="60" r="5.5"/></g></svg><span class="lab">Star Pictures</span></button>
+
+<div id="constOv" class="overlay" role="dialog" aria-modal="true">
+  <div id="csPick">
+    <div class="cs-head">
+      <button class="bigbtn b-green cs-back" id="csHome" aria-label="Back to space"></button>
+      <div class="cs-title">Star Pictures</div>
+      <div id="csCount"></div>
+    </div>
+    <div class="cs-sub">Connect the stars to make a picture in the sky!</div>
+    <div id="csAll"></div>
+    <div class="cs-modes">
+      <button class="cs-mode on" id="csEasyBtn">1 2 3 &nbsp;Easy</button>
+      <button class="cs-mode" id="csHardBtn">&#11088; Tricky</button>
+    </div>
+    <div class="cs-grid" id="csGrid"></div>
+  </div>
+  <div id="csPlay">
+    <div class="cs-head">
+      <button class="bigbtn b-purple cs-back" id="csBack" aria-label="More star pictures"></button>
+      <div class="cs-title" id="csName">Stars</div>
+      <div id="csThumb"></div>
+    </div>
+    <svg id="csSky" viewBox="-9 -9 118 118" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg"></svg>
+    <div class="card" id="csReveal" style="--c:#ffd84d">
+      <h1 id="csRName">Name</h1>
+      <div id="csEarned" class="earned" style="display:none"></div>
+      <p class="fact" id="csFact">Fact</p>
+      <div id="csDots" class="dots"></div>
+      <div class="btns">
+        <button class="bigbtn b-blue" id="csAgain" aria-label="Hear it again"></button>
+        <button class="bigbtn b-purple" id="csMore" aria-label="Tell me more"></button>
+        <button class="bigbtn b-green" id="csNext" aria-label="More star pictures"></button>
+      </div>
+    </div>
+  </div>
 </div>
 <canvas id="confetti"></canvas>
 
@@ -575,7 +675,7 @@ function goTo(id){
 /* ---------------- Cards ---------------- */
 const cardOv = document.getElementById("cardOv");
 let currentId = null, partyPending = false, shownIdx = 0;
-function busy(){ return cardOv.classList.contains("show") || document.getElementById("party").classList.contains("show") || document.getElementById("start").classList.contains("show"); }
+function busy(){ return cardOv.classList.contains("show") || document.getElementById("party").classList.contains("show") || document.getElementById("start").classList.contains("show") || document.getElementById("constOv").classList.contains("show"); }
 function openCard(id){
   const b = BODIES.find(b=>b.id===id); currentId = id;
   const a = vbAspect(id), s = 220;
@@ -653,6 +753,304 @@ function replay(){
   say("Let's explore again, " + PLAYER_NAME + "! Tap a planet to fly there.");
 }
 
+
+/* ---------------- Star pictures (constellations) ---------------- */
+// Star spots use real sky positions (right ascension / declination), projected flat with north up and
+// east to the left like a sky map, then scaled to a 0-100 box. Each star: [x, y, magnitude (smaller = brighter), name].
+// strokes = the lines people draw between the stars, in the order she connects them in Easy mode.
+const CONSTS = [
+  {id:"bigdipper", name:"The Big Dipper", pic:"🐻", picName:"part of the Great Bear",
+   stars:[[84.1,30.8,1.8,"Dubhe"],[90.0,47.3,2.4,"Merak"],[68.1,60.5,2.4,"Phecda"],[57.5,50.6,3.3,"Megrez"],[40.4,53.3,1.8,"Alioth"],[26.4,54.4,2.2,"Mizar"],[10.0,69.2,1.9,"Alkaid"]],
+   strokes:[[6,5,4,3,0,1,2,3]], tags:{},
+   facts:[
+    "The Big Dipper looks like a giant spoon in the sky! It is part of a bigger star picture called the Great Bear.",
+    "The two stars at the end of the spoon's cup point to the North Star.",
+    "If you live in the northern part of the world, you can find the Big Dipper on lots of nights, all year long."
+    ]},
+  {id:"littledipper", name:"The Little Dipper", pic:"🧸", picName:"the Little Bear",
+   stars:[[45.4,10.0,2.0,"Polaris"],[39.9,26.2,4.4,"Yildun"],[37.7,46.0,4.2,"Epsilon"],[46.8,65.0,4.3,"Zeta"],[62.3,78.6,2.1,"Kochab"],[54.8,90.0,3.0,"Pherkad"],[38.2,73.1,5.0,"Eta"]],
+   strokes:[[0,1,2,3,4,5,6,3]], tags:{"0": "North Star"},
+   facts:[
+    "The Little Dipper is part of the Little Bear. The star at the end of its handle is the North Star!",
+    "The North Star stays in almost the same spot all night, while the other stars slowly circle around it.",
+    "Long ago, sailors looked for the North Star to find which way was north."
+    ]},
+  {id:"cassiopeia", name:"Cassiopeia", pic:"👑", picName:"the Queen",
+   stars:[[90.0,54.6,2.3,"Caph"],[65.6,74.6,2.2,"Schedar"],[51.0,48.4,2.5,"Navi"],[28.0,50.5,2.7,"Ruchbah"],[10.0,25.4,3.4,"Segin"]],
+   strokes:[[0,1,2,3,4]], tags:{},
+   facts:[
+    "Cassiopeia looks like a big letter W! Long ago, people imagined a queen sitting on her throne.",
+    "When Cassiopeia turns upside down, it looks like the letter M!",
+    "Cassiopeia is close to the North Star, so you can find it on clear nights all year long."
+    ]},
+  {id:"orion", name:"Orion", pic:"🏹", picName:"the Hunter",
+   stars:[[49.7,10.0,3.4,"Meissa"],[29.4,20.3,0.5,"Betelgeuse"],[59.8,24.7,1.6,"Bellatrix"],[44.0,58.3,1.8,"Alnitak"],[48.6,55.3,1.7,"Alnilam"],[52.9,51.7,2.2,"Mintaka"],[36.9,90.0,2.1,"Saiph"],[70.6,84.0,0.1,"Rigel"]],
+   strokes:[[0,2,5,7,6,3,1,0],[5,4,3]], tags:{"1": "Betelgeuse", "7": "Rigel"},
+   facts:[
+    "Orion is a hunter! Look for three stars in a row. That is his belt!",
+    "Orion's shoulder star, Betelgeuse, glows red-orange. His bright foot star, Rigel, glows blue-white.",
+    "Orion is easiest to see on cold winter nights."
+    ]},
+  {id:"leo", name:"Leo", pic:"🦁", picName:"the Lion",
+   stars:[[77.1,69.2,1.4,"Regulus"],[77.3,56.2,3.5,"Eta"],[69.0,48.2,2.0,"Algieba"],[70.9,38.6,3.4,"Adhafera"],[85.3,30.8,3.9,"Rasalas"],[90.0,36.6,3.0,"Epsilon"],[35.0,45.6,2.6,"Zosma"],[34.1,59.4,3.3,"Chertan"],[10.0,60.1,2.1,"Denebola"]],
+   strokes:[[5,4,3,2,1,0,7,8,6,2],[6,7]], tags:{"0": "Regulus"},
+   facts:[
+    "Leo is a lion! The stars of his head and mane look like a backwards question mark.",
+    "Leo's brightest star is called Regulus. Its name means little king.",
+    "Look for Leo the lion on spring nights."
+    ]},
+  {id:"cygnus", name:"Cygnus", pic:"🦢", picName:"the Swan",
+   stars:[[21.4,10.0,1.3,"Deneb"],[36.3,34.4,2.2,"Sadr"],[60.0,58.2,3.9,"Eta"],[87.7,90.0,3.1,"Albireo"],[67.5,11.2,2.9,"Delta"],[12.3,61.9,2.5,"Gienah"]],
+   strokes:[[0,1,2,3],[4,1,5]], tags:{"0": "Deneb"},
+   facts:[
+    "Cygnus is a swan with long wings, flying across the Milky Way!",
+    "Cygnus is also called the Northern Cross, because its stars make a big cross shape.",
+    "Look for Cygnus high in the sky on summer nights. The star at its tail is called Deneb."
+    ]},
+  {id:"scorpius", name:"Scorpius", pic:"🦂", picName:"the Scorpion",
+   stars:[[83.3,10.0,2.6,"Acrab"],[86.4,20.1,2.3,"Dschubba"],[86.3,32.2,2.9,"Pi"],[69.3,29.3,2.9,"Sigma"],[63.0,32.0,1.0,"Antares"],[58.0,37.9,2.8,"Tau"],[47.8,58.1,2.3,"Epsilon"],[46.8,70.6,3.0,"Mu"],[45.4,85.3,3.6,"Zeta"],[34.6,88.9,3.3,"Eta"],[18.8,90.0,1.9,"Sargas"],[13.6,77.0,2.4,"Kappa"],[18.7,69.6,1.6,"Shaula"]],
+   strokes:[[0,1,2],[1,3,4,5,6,7,8,9,10,11,12]], tags:{"4": "Antares"},
+   facts:[
+    "Scorpius is a scorpion with a long, curly tail!",
+    "The scorpion's bright red heart star is called Antares.",
+    "Look for Scorpius low in the south on summer nights."
+    ]}
+];
+const CS_GENERAL = "Constellations are star pictures! Long ago, people imagined lines between the stars, and saw animals, heroes, and a queen.";
+const csOv = document.getElementById("constOv"), csSky = document.getElementById("csSky");
+const csDone = new Set();          // star pictures she has finished (a star each, like the planets)
+let csEasy = true, cs = null, csAllCheered = false, csIntroDone = false;
+const CS_NOTES = [523,587,659,784,880,1047,1175,1319,1568,1760,2093,2349,2637];
+function csStarR(m){ return Math.max(1.7, Math.min(3.7, 3.9 - m*0.6)); }
+function csFind(id){ return CONSTS.find(c => c.id === id); }
+function csEdges(c){ const e = []; c.strokes.forEach(sk => { for(let i=1;i<sk.length;i++) e.push(sk[i-1] < sk[i] ? sk[i-1]+"-"+sk[i] : sk[i]+"-"+sk[i-1]); }); return e; }
+function csKey(a, b){ return a < b ? a+"-"+b : b+"-"+a; }
+// Easy mode: one tap per step. A stroke that starts at a star that is already lit just picks up the pen there.
+function csPlan(c){
+  const steps = [], lit = new Set();
+  c.strokes.forEach(sk => {
+    let pen = null;
+    sk.forEach((s, i) => {
+      if(i === 0 && lit.has(s)){ pen = s; return; }
+      steps.push({to:s, from: i === 0 ? null : pen}); lit.add(s); pen = s;
+    });
+  });
+  return steps;
+}
+// small picture of the pattern (picker tiles and the Tricky mode hint)
+function csMini(c, done){
+  const col = done ? "#ffd84d" : "rgba(255,255,255,.4)";
+  let p = "";
+  c.strokes.forEach(sk => { p += "M" + sk.map(i => c.stars[i][0] + " " + c.stars[i][1]).join(" L"); });
+  const dots = c.stars.map(s => `<circle cx="${s[0]}" cy="${s[1]}" r="${(csStarR(s[2])*.9).toFixed(1)}" fill="${done ? "#ffd60a" : "#fff"}"/>`).join("");
+  return `<svg viewBox="-6 -6 112 112" xmlns="http://www.w3.org/2000/svg"><path d="${p}" stroke="${col}" stroke-width="1.8" fill="none" stroke-linejoin="round" stroke-linecap="round" ${done ? "" : 'stroke-dasharray="3 3"'}/>${dots}</svg>`;
+}
+function csUpdateCount(){ document.getElementById("csCount").innerHTML = STAR_SVG + "<span>" + csDone.size + " / " + CONSTS.length + "</span>"; }
+function csRenderPicker(){
+  const grid = document.getElementById("csGrid"); grid.innerHTML = "";
+  for(const c of CONSTS){
+    const t = document.createElement("button");
+    t.className = "cs-tile" + (csDone.has(c.id) ? " done" : ""); t.dataset.id = c.id; t.setAttribute("aria-label", c.name);
+    t.innerHTML = csMini(c, csDone.has(c.id)) + "<span>" + c.name.replace(/^The /, "") + "</span>" + STAR_SVG.replace("<svg", "<svg class=\"got\"");
+    t.addEventListener("click", e => { e.stopPropagation(); csStart(c.id); });
+    grid.appendChild(t);
+  }
+  csUpdateCount();
+  document.getElementById("csEasyBtn").classList.toggle("on", csEasy);
+  document.getElementById("csHardBtn").classList.toggle("on", !csEasy);
+}
+function csShowPicker(speak){
+  cs = null; stopTalking();
+  csOv.classList.remove("play"); csOv.classList.add("pick");
+  document.getElementById("csPlay").classList.remove("revealed");
+  csRenderPicker();
+  const all = csDone.size === CONSTS.length;
+  document.getElementById("csPick").classList.toggle("alldone", all);
+  document.getElementById("csAll").textContent = "You found all " + CONSTS.length + " star pictures, Captain\u00a0" + NAME_ON_SCREEN + "!";
+  if(all && !csAllCheered){
+    csAllCheered = true; fanfare(); csConfetti();
+    say("Wow, Captain " + PLAYER_NAME + "! You found all " + CONSTS.length + " star pictures! Did you know? The stars in a star picture only look close together. Some are much, much farther away than others!");
+  } else if(speak){
+    say(csIntroDone ? "Pick a star picture, " + PLAYER_NAME + "!" : CS_GENERAL + " Pick one, " + PLAYER_NAME + ", and connect the stars!");
+    csIntroDone = true;
+  }
+}
+function openStars(){
+  if(busy()) return;
+  document.getElementById("hint").textContent = "Tap a planet to fly there!";
+  csOv.classList.add("show"); chime();
+  csShowPicker(true);
+}
+function closeStars(){ csOv.classList.remove("show","pick","play"); cs = null; stopTalking(); }
+function csSetMode(easy){
+  csEasy = easy; csRenderPicker();
+  say(easy ? "Easy stars! Follow the numbers: one, two, three!" : "Tricky stars! No numbers. Look at the little picture, and connect the stars that go together.");
+}
+function csStart(id){
+  const c = csFind(id);
+  cs = {c, steps: csPlan(c), k: 0, edges: new Set(csEdges(c)), used: new Set(), pen: null, lit: new Set(), wrong: 0, finished: false, fi: 0};
+  csOv.classList.remove("pick"); csOv.classList.add("play");
+  document.getElementById("csPlay").classList.remove("revealed");
+  document.getElementById("csName").textContent = c.name;
+  document.getElementById("csThumb").innerHTML = csEasy ? "" : csMini(c, false);
+  document.getElementById("csThumb").style.visibility = csEasy ? "hidden" : "visible";
+  csBuildSky();
+  if(csEasy) csMarkNext();
+  const nm = c.name.replace(/^The /, "the ");
+  say(csEasy ? "Let's make " + nm + "! Tap star number one." : "Let's make " + nm + "! Tap a star to start, then connect the stars that go together.");
+}
+function csBuildSky(){
+  const c = cs.c, easy = csEasy;
+  let bg = "";
+  for(let i=0;i<80;i++) bg += `<circle cx="${(Math.random()*118-9).toFixed(1)}" cy="${(Math.random()*118-9).toFixed(1)}" r="${(Math.random()*.4+.15).toFixed(2)}" fill="#fff" opacity="${(Math.random()*.45+.15).toFixed(2)}"/>`;
+  const firstNum = {}; cs.steps.forEach((s, i) => { if(!(s.to in firstNum)) firstNum[s.to] = i + 1; });
+  let st = "";
+  c.stars.forEach((s, i) => {
+    const r = csStarR(s[2]) * (easy ? 1.3 : 1.05);
+    const tag = c.tags[i] ? `<text class="cs-tag" y="${(r + 6.5).toFixed(1)}" text-anchor="middle" font-size="4.2" font-weight="bold" fill="#ffe9a8" stroke="#120a3a" stroke-width=".8" paint-order="stroke">${c.tags[i]}</text>` : "";
+    const num = easy ? `<g class="num" transform="translate(${(r + 3).toFixed(1)} ${(-r - 3).toFixed(1)})"><circle r="3.6" fill="#ff5e7e" stroke="#fff" stroke-width=".6"/><text y="1.6" text-anchor="middle" font-size="4.6" font-weight="bold" fill="#fff">${firstNum[i]}</text></g>` : "";
+    st += `<g class="cs-star" data-i="${i}" transform="translate(${s[0]} ${s[1]})"><circle r="${(r*2.6).toFixed(1)}" fill="url(#csGlow)"/><circle class="ring" r="${(r + 2.6).toFixed(1)}" fill="none" stroke-width="1"/><circle class="core" r="${r.toFixed(1)}"/>${num}${tag}</g>`;
+  });
+  csSky.classList.remove("done");
+  csSky.innerHTML = `<defs><radialGradient id="csGlow"><stop offset="0" stop-color="#fff6c9" stop-opacity=".75"/><stop offset="1" stop-color="#fff6c9" stop-opacity="0"/></radialGradient></defs>
+    <g>${bg}</g><text class="cs-pic" x="50" y="50" text-anchor="middle" dominant-baseline="central" font-size="78">${c.pic}</text>
+    <g id="csLines"></g><g>${st}</g><g id="csNextNum"></g>`;
+}
+function csStarEl(i){ return csSky.querySelector(`.cs-star[data-i="${i}"]`); }
+function csMarkNext(){
+  csSky.querySelectorAll(".cs-star.next").forEach(e => e.classList.remove("next"));
+  const nn = document.getElementById("csNextNum"); nn.innerHTML = "";
+  if(!cs || !csEasy || cs.finished || cs.k >= cs.steps.length) return;
+  const to = cs.steps[cs.k].to; csStarEl(to).classList.add("next");
+  if(cs.lit.has(to)){ // going back to a star she already lit: show the step number there
+    const s = cs.c.stars[to], r = csStarR(s[2]) * 1.3;
+    nn.innerHTML = `<g transform="translate(${(s[0] + r + 3).toFixed(1)} ${(s[1] - r - 3).toFixed(1)})"><circle r="3.6" fill="#ff5e7e" stroke="#fff" stroke-width=".6"/><text y="1.6" text-anchor="middle" font-size="4.6" font-weight="bold" fill="#fff">${cs.k + 1}</text></g>`;
+  }
+}
+function csLine(a, b){
+  const A = cs.c.stars[a], B = cs.c.stars[b], len = Math.hypot(B[0]-A[0], B[1]-A[1]).toFixed(1);
+  const p = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  p.setAttribute("d", `M${A[0]} ${A[1]} L${B[0]} ${B[1]}`); p.setAttribute("class", "cs-line");
+  p.style.strokeDasharray = len; p.style.strokeDashoffset = len;
+  document.getElementById("csLines").appendChild(p);
+}
+function csLight(i){ cs.lit.add(i); csStarEl(i).classList.add("lit"); }
+function csNote(){ tone(CS_NOTES[Math.min(cs.used.size + cs.k, CS_NOTES.length - 1)], 0, .45, "triangle", .13); }
+function csOops(i){
+  tone(196, 0, .2, "sine", .08);
+  const el = csStarEl(i); if(!el) return;
+  el.classList.remove("oops"); void el.getBBox(); el.classList.add("oops");
+  setTimeout(() => el.classList.remove("oops"), 550);
+}
+function csHint(){ // Tricky mode: after two misses, make the stars that can come next twinkle
+  csSky.querySelectorAll(".cs-star.hint").forEach(e => e.classList.remove("hint"));
+  cs.c.stars.forEach((s, i) => {
+    const ok = cs.pen === null ? csLeft(i) > 0 : cs.edges.has(csKey(cs.pen, i)) && !cs.used.has(csKey(cs.pen, i));
+    if(ok) csStarEl(i).classList.add("hint");
+  });
+}
+function csLeft(i){ let n = 0; cs.edges.forEach(k => { if(!cs.used.has(k) && k.split("-").map(Number).includes(i)) n++; }); return n; }
+function csTap(e){
+  if(!cs || cs.finished) return;
+  const m = csSky.getScreenCTM(); if(!m) return;
+  const pt = csSky.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
+  const q = pt.matrixTransform(m.inverse()), unit = Math.abs(m.a) || 1;
+  const hit = 46 / unit; // about 46px finger reach around each star
+  let best = -1, bd = 1e9;
+  cs.c.stars.forEach((s, i) => { const d = Math.hypot(q.x - s[0], q.y - s[1]); if(d < bd){ bd = d; best = i; } });
+  if(csEasy){
+    const step = cs.steps[cs.k], t = cs.c.stars[step.to];
+    if(Math.hypot(q.x - t[0], q.y - t[1]) <= hit * 1.4 || (best === step.to && bd <= hit * 2)){
+      if(step.from !== null) csLine(step.from, step.to);
+      csNote(); csLight(step.to); cs.k++;
+      if(cs.k >= cs.steps.length) csFinish(); else csMarkNext();
+    } else if(bd <= hit){
+      csOops(best); csStarEl(step.to).classList.remove("next"); void csStarEl(step.to).getBBox(); csStarEl(step.to).classList.add("next");
+    }
+    return;
+  }
+  if(bd > hit) return;
+  const s = best;
+  if(cs.pen === s) return;
+  if(cs.pen !== null && cs.edges.has(csKey(cs.pen, s)) && !cs.used.has(csKey(cs.pen, s))){
+    csLine(cs.pen, s); cs.used.add(csKey(cs.pen, s)); csNote(); csLight(s); cs.wrong = 0;
+    csSky.querySelectorAll(".cs-star.hint").forEach(e => e.classList.remove("hint"));
+    if(cs.used.size === cs.edges.size){ csSetPen(null); csFinish(); return; }
+    csSetPen(csLeft(s) > 0 ? s : null);
+  } else if((cs.pen === null || csLeft(cs.pen) === 0) && csLeft(s) > 0){
+    csSetPen(s); csLight(s); csNote(); cs.wrong = 0;
+    csSky.querySelectorAll(".cs-star.hint").forEach(e => e.classList.remove("hint"));
+  } else {
+    csOops(s); cs.wrong++;
+    if(cs.wrong >= 2) csHint();
+  }
+}
+function csSetPen(i){
+  csSky.querySelectorAll(".cs-star.pen").forEach(e => e.classList.remove("pen"));
+  cs.pen = i; if(i !== null) csStarEl(i).classList.add("pen");
+}
+function csFinish(){
+  cs.finished = true; csMarkNext();
+  csSky.querySelectorAll(".cs-star.hint,.cs-star.pen").forEach(e => e.classList.remove("hint","pen"));
+  csSky.classList.add("done");
+  const c = cs.c, isNew = !csDone.has(c.id);
+  if(isNew){ csDone.add(c.id); csUpdateCount(); }
+  setTimeout(() => {
+    if(!cs || cs.c !== c) return;
+    chime();
+    const earned = document.getElementById("csEarned");
+    if(isNew){ earned.innerHTML = STAR_SVG + "<span>You got a star!</span>"; earned.style.display = "inline-flex"; }
+    else earned.style.display = "none";
+    document.getElementById("csRName").textContent = c.name + " " + c.pic;
+    document.getElementById("csPlay").classList.add("revealed");
+    csShowFact(0, true);
+  }, 700);
+}
+function csShowFact(i, first){
+  const c = cs.c; i = i % c.facts.length; cs.fi = i;
+  const f = document.getElementById("csFact");
+  f.textContent = c.facts[i]; f.classList.remove("newfact"); void f.offsetWidth; f.classList.add("newfact");
+  document.getElementById("csDots").innerHTML = c.facts.map((_, k) => `<span class="${k === i ? "on" : ""}"></span>`).join("");
+  const intro = first ? "You made " + c.name.replace(/^The /, "the ") + ", " + c.picName + "! Great job, " + PLAYER_NAME + "! " : "";
+  say(intro + c.facts[i]);
+}
+let csBits = [], csConfAnim = null;
+function csConfetti(){
+  conf.width = innerWidth; conf.height = innerHeight;
+  const cols = ["#ffd60a","#fff3b0","#7ee8fa","#ff5e7e","#b28dff"];
+  csBits = Array.from({length:150}, () => ({x:Math.random()*innerWidth, y:-20-Math.random()*innerHeight*.6, vx:(Math.random()-.5)*3, vy:2+Math.random()*3,
+    r:Math.random()*6.28, vr:(Math.random()-.5)*.3, s:7+Math.random()*8, c:cols[Math.random()*cols.length|0]}));
+  const t0 = performance.now();
+  const step = now => {
+    cctx.clearRect(0,0,conf.width,conf.height);
+    for(const p of csBits){
+      p.x += p.vx; p.y += p.vy; p.r += p.vr; p.vy += .03;
+      cctx.save(); cctx.translate(p.x,p.y); cctx.rotate(p.r); cctx.fillStyle = p.c; cctx.beginPath();
+      for(let i=0;i<10;i++){ const a=i*Math.PI/5, rr=i%2?p.s*.45:p.s; cctx.lineTo(Math.sin(a)*rr,-Math.cos(a)*rr); }
+      cctx.closePath(); cctx.fill(); cctx.restore();
+    }
+    if(now - t0 < 5000) csConfAnim = requestAnimationFrame(step); else cctx.clearRect(0,0,conf.width,conf.height);
+  };
+  if(csConfAnim) cancelAnimationFrame(csConfAnim);
+  csConfAnim = requestAnimationFrame(step);
+}
+document.getElementById("skyBtn").addEventListener("click", e => { e.stopPropagation(); openStars(); });
+document.getElementById("csHome").innerHTML = ICON_GO + "<span>Back to space</span>";
+document.getElementById("csBack").innerHTML = ICON_AGAIN + "<span>Star pictures</span>";
+document.getElementById("csAgain").innerHTML = ICON_SPEAK + "<span>Hear it again</span>";
+document.getElementById("csMore").innerHTML = STAR_SVG.replace("<svg","<svg style=\"width:36px;height:36px\"") + "<span>Tell me more!</span>";
+document.getElementById("csNext").innerHTML = ICON_GO + "<span>More star pictures</span>";
+document.getElementById("csHome").addEventListener("click", e => { e.stopPropagation(); closeStars(); });
+document.getElementById("csBack").addEventListener("click", e => { e.stopPropagation(); csShowPicker(false); });
+document.getElementById("csNext").addEventListener("click", e => { e.stopPropagation(); csShowPicker(true); });
+document.getElementById("csAgain").addEventListener("click", e => { e.stopPropagation(); if(cs) say(cs.c.facts[cs.fi]); });
+document.getElementById("csMore").addEventListener("click", e => { e.stopPropagation(); if(cs) csShowFact(cs.fi + 1, false); });
+document.getElementById("csEasyBtn").addEventListener("click", e => { e.stopPropagation(); csSetMode(true); });
+document.getElementById("csHardBtn").addEventListener("click", e => { e.stopPropagation(); csSetMode(false); });
+csSky.addEventListener("pointerdown", e => { e.preventDefault(); csTap(e); });
+csOv.addEventListener("click", e => e.stopPropagation());
+document.addEventListener("keydown", e => { if(e.key === "Escape" && csOv.classList.contains("show")) closeStars(); });
+
 /* ---------------- Wire up ---------------- */
 document.getElementById("welcome").textContent = "Welcome, Captain\u00a0" + NAME_ON_SCREEN + "!";
 document.getElementById("badge").innerHTML = STAR_SVG + "<span>Captain " + PLAYER_NAME + "</span>";
@@ -679,7 +1077,7 @@ document.addEventListener("keydown", e => { if(e.key === "Escape" && cardOv.clas
 buildBodies(); makeStars(); layout(); requestAnimationFrame(drawSky);
 let rt = null;
 addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(() => { makeStars(); layout(); }, 120); });
-window.__space = {visited, BODIES, factIdx}; // handy for testing
+window.__space = {visited, BODIES, factIdx, CONSTS, csDone}; // handy for testing
 })();
 </script>
 </body>
