@@ -498,10 +498,12 @@ function say(text){
   const words = text.split(/\s+/).length;
   talkTimer = setTimeout(() => { if(seq === speakSeq) setTalking(false); }, 900 + words*420);
   if(!synth) return;
-  try{
-    synth.cancel();
-    setTimeout(() => {
+  const go = () => {
       if(seq !== speakSeq) return;
+      try{ if(synth.paused) synth.resume(); }catch(e){}
+      duckSfx(true); clearTimeout(speechWatch);
+      // fallback: un-duck, and un-stick iOS speech if it never reports finishing
+      speechWatch = setTimeout(() => { duckSfx(false); try{ if(synth.speaking && !synth.pending) synth.cancel(); }catch(e){} }, 4000 + words*600);
       parts.forEach((part, i) => {
         const u = new SpeechSynthesisUtterance(part.trim());
         if(voice) u.voice = voice;
@@ -511,15 +513,51 @@ function say(text){
         u.pitch = Math.min(2, base + (i % 2 ? .12 : 0) + (exclaim ? .1 : 0));
         u.rate = (i === 0 ? .95 : .86) + (i % 2 ? .04 : 0);
         u.volume = 1;
-        if(i === parts.length - 1) u.onend = () => { if(seq === speakSeq){ clearTimeout(talkTimer); setTalking(false); } };
-        synth.speak(u);
+        if(i === parts.length - 1){
+          u.onend = () => { if(seq === speakSeq){ clearTimeout(talkTimer); clearTimeout(speechWatch); setTalking(false); duckSfx(false); } };
+          u.onerror = () => { if(seq === speakSeq){ clearTimeout(speechWatch); duckSfx(false); } };
+        }
+        try{ synth.speak(u); }catch(e){}
       });
-    }, 60); // small gap avoids a Chrome cancel/speak race
+  };
+  try{
+    clearTimeout(speakGap);
+    // only cancel when something is actually playing, and give iOS a moment after cancel() before speak()
+    if(synth.speaking || synth.pending){ synth.cancel(); speakGap = setTimeout(go, 150); } else go();
   }catch(e){}
 }
-function stopTalking(){ speakSeq++; clearTimeout(talkTimer); setTalking(false); if(synth) synth.cancel(); }
+let speakGap = 0, speechWatch = 0;
+function stopTalking(){ speakSeq++; clearTimeout(talkTimer); clearTimeout(speakGap); clearTimeout(speechWatch); setTalking(false); duckSfx(false);
+  if(synth){ try{ if(synth.speaking || synth.pending) synth.cancel(); }catch(e){} } }
 /* ---------------- Little sounds (WebAudio, no files) ---------------- */
-let actx = null;
+let actx = null, sfxBus = null, SILENT = null;
+const SILENT_WAV='data:audio/wav;base64,UklGRvQHAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YdAHAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgA==';
+/* Create/resume the AudioContext. Resumes from 'suspended' AND iOS 'interrupted'. */
+function ensureAudio(){
+  try{
+    if(!actx){ const C = window.AudioContext || window.webkitAudioContext; if(!C) return null; actx = new C();
+      sfxBus = actx.createGain(); sfxBus.gain.value = 1; sfxBus.connect(actx.destination); }
+    if(actx.state !== "running"){ const p = actx.resume(); if(p && p.catch) p.catch(() => {}); }
+  }catch(e){}
+  return actx;
+}
+/* Called on EVERY user gesture (capture phase). On iPad this (a) asks for the 'playback' audio session so the
+   ring/silent switch doesn't mute the game, (b) plays a silent looping <audio> which moves older iOS to the
+   media channel too, (c) primes Web Audio with a silent buffer, and (d) un-sticks paused speech. */
+function unlockAudio(){
+  try{ if(navigator.audioSession && navigator.audioSession.type !== "playback") navigator.audioSession.type = "playback"; }catch(e){}
+  ensureAudio();
+  try{
+    if(!SILENT){ SILENT = document.createElement("audio"); SILENT.src = SILENT_WAV; SILENT.loop = true;
+      SILENT.setAttribute("playsinline", ""); SILENT.setAttribute("webkit-playsinline", ""); SILENT.preload = "auto"; }
+    if(SILENT.paused){ const p = SILENT.play(); if(p && p.catch) p.catch(() => {}); }
+  }catch(e){}
+  try{ if(actx && !actx.__primed){ const b = actx.createBuffer(1, 1, 22050), s = actx.createBufferSource(); s.buffer = b; s.connect(actx.destination); s.start(0); actx.__primed = 1; } }catch(e){}
+  try{ if(synth && synth.paused) synth.resume(); }catch(e){}
+}
+["pointerdown","touchstart","touchend","mousedown","click","keydown"].forEach(t => document.addEventListener(t, unlockAudio, {capture:true, passive:true}));
+/* sound effects dip a little while the voice is talking, so the words stay clear */
+function duckSfx(on){ if(!actx || !sfxBus) return; try{ const t = actx.currentTime; sfxBus.gain.cancelScheduledValues(t); sfxBus.gain.setTargetAtTime(on ? .45 : 1, t, .08); }catch(e){} }
 function tone(freq, t0, dur, type, vol){
   if(!actx) return;
   const o = actx.createOscillator(), g = actx.createGain();
@@ -527,14 +565,14 @@ function tone(freq, t0, dur, type, vol){
   g.gain.setValueAtTime(0.0001, actx.currentTime + t0);
   g.gain.exponentialRampToValueAtTime(vol || 0.15, actx.currentTime + t0 + 0.02);
   g.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + t0 + dur);
-  o.connect(g).connect(actx.destination); o.start(actx.currentTime + t0); o.stop(actx.currentTime + t0 + dur + .05);
+  o.connect(g).connect(sfxBus || actx.destination); o.start(actx.currentTime + t0); o.stop(actx.currentTime + t0 + dur + .05);
 }
 function chime(){ [784,988,1319].forEach((f,i)=>tone(f,i*.09,.35,"triangle",.12)); }
 function fanfare(){ [523,659,784,1047,784,1047].forEach((f,i)=>tone(f,i*.14,.4,"triangle",.14)); }
 function whoosh(){ if(!actx) return; const o=actx.createOscillator(),g=actx.createGain(); o.type="sine";
   o.frequency.setValueAtTime(180,actx.currentTime); o.frequency.exponentialRampToValueAtTime(520,actx.currentTime+.5);
   g.gain.setValueAtTime(.0001,actx.currentTime); g.gain.exponentialRampToValueAtTime(.06,actx.currentTime+.08); g.gain.exponentialRampToValueAtTime(.0001,actx.currentTime+.6);
-  o.connect(g).connect(actx.destination); o.start(); o.stop(actx.currentTime+.7); }
+  o.connect(g).connect(sfxBus || actx.destination); o.start(); o.stop(actx.currentTime+.7); }
 
 /* ---------------- Starfield ---------------- */
 const sky = document.getElementById("sky"), sctx = sky.getContext("2d");
@@ -1067,7 +1105,7 @@ cardOv.addEventListener("click", e => { if(e.target === cardOv) closeCard(); });
 document.getElementById("replayBtn").addEventListener("click", e => { e.stopPropagation(); replay(); });
 document.getElementById("startBtn").addEventListener("click", e => {
   e.stopPropagation();
-  try{ actx = new (window.AudioContext || window.webkitAudioContext)(); }catch(err){ actx = null; }
+  unlockAudio();
   document.getElementById("start").classList.remove("show");
   chime();
   say("Hi " + PLAYER_NAME + "! Ready to explore space? Tap a planet, and your rocket will fly there.");
@@ -1077,7 +1115,7 @@ document.addEventListener("keydown", e => { if(e.key === "Escape" && cardOv.clas
 buildBodies(); makeStars(); layout(); requestAnimationFrame(drawSky);
 let rt = null;
 addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(() => { makeStars(); layout(); }, 120); });
-window.__space = {visited, BODIES, factIdx, CONSTS, csDone}; // handy for testing
+window.__space = {visited, BODIES, factIdx, CONSTS, csDone, audio: () => ({ctx: actx && actx.state, silent: !!SILENT && !SILENT.paused})}; // handy for testing
 })();
 </script>
 </body>
